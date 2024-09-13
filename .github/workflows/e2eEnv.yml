@@ -11,13 +11,13 @@ on:
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest
-
+    environment: ${{ github.event.inputs.environment }}
     
 
     steps:      
       # Шаг 0: get url
       - name: Checkout repository
-        run: echo "${{ vars.url }}"
+        run: echo "${{ env.url }}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
