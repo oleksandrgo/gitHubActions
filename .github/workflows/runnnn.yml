@@ -11,12 +11,12 @@ on:
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest   
-    environment: qauto
+    environment: ${{ github.event.inputs.environment }}
 
     steps:      
-       # Шаг 111: Установить HTML reporter
+       # Шаг 0: Проверка енв переменой
       - name: adssads
-        run: echo " My ${{ env.URL }}"
+        run: echo " ${{ github.event.inputs.environment }}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
 
       # Шаг 5: Запуск Postman коллекции
       - name: Run Postman Collection
-        run: newman run https://api.postman.com/collections/1911365-1a4e032c-530f-422a-a669-ab37949cbc15?apikey=${{ secrets.POSTMAN_API_KEY }} -e ${{ github.event.inputs.environment }}.url?apikey=${{ secrets.POSTMAN_API_KEY }} -r cli,htmlextra --reporter-htmlextra-export testResult/htmlreport.html
+        run: newman run https://api.postman.com/collections/1911365-1a4e032c-530f-422a-a669-ab37949cbc15?apikey=${{ secrets.POSTMAN_API_KEY }} -e ${{ vars.URL }}?apikey=${{ secrets.POSTMAN_API_KEY }} -r cli,htmlextra --reporter-htmlextra-export testResult/htmlreport.html
 
       # Шаг 5: Сохранить отчет о выполнении
       - name: Upload Test Results
