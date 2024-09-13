@@ -15,9 +15,13 @@ jobs:
     
 
     steps:      
+     # Шаг 0: get env
+      - name:  get env
+        run: echo "Repository Variable: ${{ github.event.inputs.environment }}"
+        
       # Шаг 0: get url
-      - name: Checkout repository
-        run: echo "${{ env.url }}"
+      - name: get url
+        run: echo "Repository Variable: ${{ env.MY_REPO_VAR }}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
