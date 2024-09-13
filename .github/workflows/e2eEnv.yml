@@ -17,7 +17,7 @@ jobs:
     steps:      
      # Шаг 0: get env
       - name:  get env
-        run: echo "Repository Variable: ${{ github.event.inputs.environment }}"
+        run: echo "Repositorhhy Variable: ${{ github.event.inputs.environment }}"
         
       # Шаг 0: get url
       - name: get url
