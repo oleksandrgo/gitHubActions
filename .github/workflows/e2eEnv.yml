@@ -12,7 +12,13 @@ jobs:
   run-postman-collection:
     runs-on: ubuntu-latest
 
-    steps:        
+    
+
+    steps:      
+      # Шаг 0: get url
+      - name: Checkout repository
+        run: echo "${{ env.url }}"
+        
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
         uses: actions/checkout@v3
