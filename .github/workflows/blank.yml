@@ -1,18 +1,44 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Run Postman Collection
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  Explore-GitHub-Actions:
+  run-postman-collection:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      # Шаг 1: Checkout кода репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Шаг 2: Установить Node.js (поскольку newman — это Node.js пакет)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # или другая версия, которая вам нужна
+
+      # Шаг 3: Установить Newman для выполнения Postman коллекции
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Шаг 4: Установить HTML reporter
+      - name: Install html-extra
+        run: npm install -g newman-reporter-htmlextra
+
+      # Шаг 5: Ствоереня директорії для репорту
+      - name: Make directory for result
+        run: mkdir -p testResult
+
+      # Шаг 5: Запуск Postman коллекции
+      - name: Run Postman Collection
+        run: newman run https://api.postman.com/collections/1911365-1a4e032c-530f-422a-a669-ab37949cbc15?apikey=${{ secrets.POSTMAN_API_KEY }} -r htmlextra --reporter-htmlextra-export testResult/htmlreport.html
+
+      # Шаг 5: Сохранить отчет о выполнении
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Report result
+          path: testResult
