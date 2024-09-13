@@ -4,16 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Which environment to deploy to'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - qauto1
-          - qauto2
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest
