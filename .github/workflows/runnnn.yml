@@ -11,7 +11,7 @@ on:
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest   
-    environment: ${{ github.event.inputs.environment }}
+    environment: qauto
 
     steps:      
        # Шаг 111: Установить HTML reporter
