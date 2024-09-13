@@ -11,11 +11,15 @@ on:
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
    
     
 
     steps:      
-     
+       # Шаг 111: Установить HTML reporter
+      - name: adssads
+        run: echo " My ${{env.URL}}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
