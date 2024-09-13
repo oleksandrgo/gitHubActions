@@ -17,7 +17,7 @@ jobs:
     steps:      
       # Шаг 0: get url
       - name: Checkout repository
-        run: echo "${{ env.url }}"
+        run: echo "${{ vars.url }}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
