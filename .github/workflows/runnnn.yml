@@ -11,14 +11,12 @@ on:
 jobs:
   run-postman-collection:
     runs-on: ubuntu-latest   
-    environment: |
-          echo "Selected environment: ${{ github.event.inputs.environment }}"
-          echo "Using URL: ${{ env.URL }}"  # Доступ к переменной из секции Variables
+    environment: ${{ github.event.inputs.environment }}
 
     steps:      
        # Шаг 111: Установить HTML reporter
       - name: adssads
-        run: echo " My ${{env.URL}}"
+        run: echo " My ${{ env.URL }}"
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
