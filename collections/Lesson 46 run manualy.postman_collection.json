@@ -1,0 +1,627 @@
+{
+	"info": {
+		"_postman_id": "c48048d3-d665-4765-9442-ad3147b7b797",
+		"name": "Lesson 46 run manualy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1911365"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn(\"{{$randomEmail}}\"));\r",
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn(\"{{$randomPassword}}\"));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"      \"status\": {\r",
+							"          \"type\": \"string\"            \r",
+							"      },\r",
+							"      \"data\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"              \"userId\": {\r",
+							"                  \"type\": \"integer\",\r",
+							"                  \"minimum\": 1\r",
+							"              },\r",
+							"              \"distanceUnits\": {\r",
+							"                  \"type\": \"string\",\r",
+							"                  \"enum\": [\"km\", \"ml\"],\r",
+							"                  \"default\": \"km\"\r",
+							"              },\r",
+							"              \"currency\": {\r",
+							"                  \"type\": \"string\",\r",
+							"                  \"enum\": [\"eur\", \"gbp\", \"usd\", \"uah\", \"pln\"],\r",
+							"                  \"default\": \"usd\"\r",
+							"              }\r",
+							"          },\r",
+							"          \"required\": [\"userId\", \"distanceUnits\", \"currency\"]\r",
+							"      }\r",
+							"  },\r",
+							"  \"required\": [\"status\", \"data\"]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('JSON schema check', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"pm.collectionVariables.set(\"userId\", pm.response.json().data.userId)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Autorization",
+						"value": "Bearer {{auth}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"defaultUserName\",\r\n  \"lastName\": \"defaultUserLastName\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"Test!123\",\r\n  \"repeatPassword\": \"Test!123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let requestBody = JSON.parse(request.data);\r",
+							"let response = pm.response.json();\r",
+							"let dateBirthPattern = /^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12]\\d|3[01])T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/;\r",
+							"\r",
+							"pm.test('Check name', () => {    \r",
+							"    pm.expect(response.data['name']).to.equal(requestBody.name);   \r",
+							"})\r",
+							"\r",
+							"pm.test('Check lastName', () => {    \r",
+							"     pm.expect(response.data['lastName']).to.equal(requestBody.lastName);\r",
+							"})\r",
+							"\r",
+							"pm.test('Check country', () => {    \r",
+							"     pm.expect(response.data['country']).to.equal(requestBody.country);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Date birth validation\", () => {  \r",
+							"    pm.expect(response.data.dateBirth).to.match(dateBirthPattern);    \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Date birth validation\", () => {  \r",
+							"    pm.expect(response.data.photoFilename).to.equal(\"default-user.png\");    \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Test\",\r\n  \"lastName\": \"Test\",\r\n  \"country\": \"Ukraine\",\r\n  \"dateBirth\": \"{{$randomDateRecent}}\",\r\n  \"photo\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/profile",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"newPassword\", pm.variables.replaceIn(\"{{$randomPassword}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check password resset\", function () {\r",
+							"    pm.expect(pm.response.json().data.userId).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"oldPassword\": \"Test!123\",\r\n  \"password\": \"Test!1234\",\r\n  \"repeatPassword\": \"Test!1234\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/password",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log out",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.test(\"logout OK\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"      \"status\": {\r",
+							"          \"type\": \"string\"            \r",
+							"      },\r",
+							"      \"data\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"              \"userId\": {\r",
+							"                  \"type\": \"integer\",\r",
+							"                  \"minimum\": 1\r",
+							"              },\r",
+							"              \"distanceUnits\": {\r",
+							"                  \"type\": \"string\",\r",
+							"                  \"enum\": [\"km\", \"ml\"],\r",
+							"                  \"default\": \"km\"\r",
+							"              },\r",
+							"              \"currency\": {\r",
+							"                  \"type\": \"string\",\r",
+							"                  \"enum\": [\"eur\", \"gbp\", \"usd\", \"uah\", \"pln\"],\r",
+							"                  \"default\": \"usd\"\r",
+							"              }\r",
+							"          },\r",
+							"          \"required\": [\"userId\", \"distanceUnits\", \"currency\"]\r",
+							"      }\r",
+							"  },\r",
+							"  \"required\": [\"status\", \"data\"]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('JSON schema check', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"pm.collectionVariables.set(\"userId\", pm.response.json().data.userId)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"Test!1234\",\r\n  \"remember\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add car",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check car brandid\", function () {\r",
+							"   pm.expect(jsonData.data.carBrandId).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check car carModelId\", function () {\r",
+							"   pm.expect(jsonData.data.carModelId).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check car initialMileage\", function () {\r",
+							"   pm.expect(jsonData.data.initialMileage).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check car mileage\", function () {\r",
+							"   pm.expect(jsonData.data.mileage).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"carId\", jsonData.data.id) \r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"mileage\", 0);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": 1,\r\n  \"carModelId\": 1,\r\n  \"mileage\": {{mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add expenses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" var jsonData = pm.response.json();\r",
+							"pm.test(\"add expense OK\", function () {   \r",
+							"    pm.expect(jsonData.data.mileage).to.eql(pm.collectionVariables.get(\"mileage\"));\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let day = new Date();\r",
+							"let fullDate = day.getFullYear() + \"-\" +(day.getMonth() + 1) + \"-\" + day.getDate()\r",
+							"pm.environment.set(\"fullDate\", fullDate);\r",
+							"\r",
+							"pm.collectionVariables.set(\"mileage\",  pm.collectionVariables.get(\"mileage\") + 1)\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carId\": {{carId}},\r\n  \"reportedAt\": \"{{fullDate}}\",\r\n  \"mileage\": {{mileage}},\r\n  \"liters\": 20,\r\n  \"totalCost\": 300,\r\n  \"forceMileage\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/expenses",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"expenses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"delete user OK\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://qauto.forstudy.space/api",
+			"type": "string"
+		},
+		{
+			"key": "photoFilename",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "newPassword",
+			"value": ""
+		},
+		{
+			"key": "carId",
+			"value": ""
+		},
+		{
+			"key": "mileage",
+			"value": ""
+		},
+		{
+			"key": "currentDataArray",
+			"value": ""
+		},
+		{
+			"key": "dataArray",
+			"value": ""
+		}
+	]
+}
