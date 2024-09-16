@@ -39,7 +39,7 @@ jobs:
 
       # Шаг 5: Запуск Postman коллекции
       - name: Run Postman Collection
-        run: newman run ./collections/Lesson 46 run manualy.postman_collection.json -e ${{ vars.URL }}?apikey=${{ secrets.POSTMAN_API_KEY }} -r cli,htmlextra --reporter-htmlextra-export testResult/htmlreport.html
+        run: newman run "./collections/Lesson 46 run manualy.postman_collection.json" -e ${{ vars.URL }}?apikey=${{ secrets.POSTMAN_API_KEY }} -r cli,htmlextra --reporter-htmlextra-export testResult/htmlreport.html
 
       # Шаг 5: Сохранить отчет о выполнении
       - name: Upload Test Results
