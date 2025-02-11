@@ -17,7 +17,7 @@ jobs:
         
       # Шаг 1: Checkout кода репозитория
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Шаг 2: Установить Node.js (поскольку newman — это Node.js пакет)
       - name: Set up Node.js
